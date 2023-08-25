@@ -47,8 +47,8 @@ if response.status_code == 200:
                 writer = csv.writer(file)
                 writer.writerow(one_title)
                 file.close()
-        except:
-            print("Falha ao encontrar os elementos")
+        except Exception as err:
+            print("Falha ao executar, problema: {}".format(err))
             
 else:
     print("Falha ao acessar a página:", response.status_code)
