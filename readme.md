@@ -32,7 +32,7 @@ Necessário para o funcionamento do código:
 
 Arquivos:
 
-    webscrapping.py -> principal -> arquivo a ser executado
+    webscraping.py -> principal -> arquivo a ser executado
 
     fila.py -> classe que cria uma fila para inserir e mostrar informações
 
