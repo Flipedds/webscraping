@@ -4,8 +4,6 @@ from bs4 import BeautifulSoup
 from fila import Fila
 from consts import URL, HEADERS, SKIP_LIST
 
-# URL da página que queremos fazer scraping
-
 # Conexão: Enviar uma solicitação GET para a URL
 response = requests.get(URL, headers=HEADERS)
 
