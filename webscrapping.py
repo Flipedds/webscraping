@@ -1,17 +1,13 @@
 import csv
 import requests
 from bs4 import BeautifulSoup
-
 from fila import Fila
+from consts import URL, HEADERS, SKIP_LIST
 
 # URL da página que queremos fazer scraping
-url = 'https://m.imdb.com/chart/top/'
-
-headers = {
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'}
 
 # Conexão: Enviar uma solicitação GET para a URL
-response = requests.get(url, headers=headers)
+response = requests.get(URL, headers=HEADERS)
 
 # Verificar se a solicitação foi bem-sucedida (status 200)
 if response.status_code == 200:
@@ -21,47 +17,31 @@ if response.status_code == 200:
     # Encontre os elementos HTML que contêm os títulos dos filmes
     titles = soup.find_all("h3", class_="ipc-title__text")
 
-    # Encontre os elementos HTML que contêm as informações
+    # Encontre os elementos HTML que contêm as informações dos filmes
     infos = soup.find_all("span", class_="sc-b85248f1-6 bnDqKN cli-title-metadata-item")
 
     fila = Fila(750)
-    for info in infos:
+    for info in infos: # adiciona cada informação em uma fila
         fila.enfileirar(info.text)
 
     #cria arquivo csv
     file = open('theBestFilms.csv', 'w', newline='')
     writer = csv.writer(file)
-    headers = ['Titulos | Tempo de filme | classificacao']
+    headers = ['Titulos | Ano do filme | Tempo de filme | classificacao']
     writer.writerow(headers)
-
-    skip_list = [
-    'You have rated',
-    'More to explore',
-    'Charts',
-    'Top Box Office (US)',
-    'Most Popular Movies',
-    'Top Rated English Movies',
-    'Most Popular TV Shows',
-    'Top 250 TV Shows',
-    'Lowest Rated Movies',
-    'Most Popular Celebs',
-    'Top Rated Movies by Genre',
-    'Recently viewed',
-    'IMDb Charts'
-    ]
 
     # Loop pelos elementos e imprimir os títulos
     for title in titles:
-        if title.text in skip_list:
+        if title.text in SKIP_LIST: # se o título for algum da lista pula para o próximo sem adicionar
            continue
-        temp = []
+        temp = [] # lista temporária que vai receber os itens vindo da fila
         for i in range(3):
             temp.append(fila.primeiro())
             fila.desenfileirar()
-        ano, tempo, aged = temp
+        ano, tempo, aged = temp # desestruturação da lista
         one_title = [title.text, ano, tempo, aged]
 
-        #salvar noticia no arquivo
+        #salvar tudo no arquivo
         file = open('theBestFilms.csv', 'a', newline='', encoding='utf-8')
         writer = csv.writer(file)
         writer.writerow(one_title)
